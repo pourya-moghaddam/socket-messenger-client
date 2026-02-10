@@ -13,7 +13,10 @@ public class SocketClientUtils {
 
     public static void runClient(String host, int port) {
         try (
-                Socket socket = new Socket(host, port); BufferedReader inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream())); PrintWriter outputStreamWriter = new PrintWriter(socket.getOutputStream(), true)) {
+            Socket socket = new Socket(host, port);
+            BufferedReader inputStreamReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter outputStreamWriter = new PrintWriter(socket.getOutputStream(), true)
+        ) {
             System.out.println("Connected to " + host + ":" + port);
 
             printInitialMessage(inputStreamReader);
