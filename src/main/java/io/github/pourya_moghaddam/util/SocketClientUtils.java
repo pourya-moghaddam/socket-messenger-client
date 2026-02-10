@@ -7,10 +7,20 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * Utility class containing the core logic for the socket chat client.
+ */
 public class SocketClientUtils {
 
     private static boolean running = true;
 
+    /**
+     * Runs the chat client: connects to the server, starts message handling threads,
+     * and manages the interactive chat session until exit.
+     *
+     * @param host the hostname or IP address of the server
+     * @param port the port number the server is listening on
+     */
     public static void runClient(String host, int port) {
         try (
             Socket socket = new Socket(host, port);
@@ -36,6 +46,13 @@ public class SocketClientUtils {
         System.out.println("Client stopped.");
     }
 
+    /**
+     * Prints the initial welcome/greeting message(s) sent by the server
+     * until it sees the line containing "Type 'bye'".
+     *
+     * @param reader the reader connected to the server's input stream
+     * @throws IOException if an I/O error occurs while reading
+     */
     private static void printInitialMessage(BufferedReader reader) throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
@@ -46,6 +63,13 @@ public class SocketClientUtils {
         }
     }
 
+    /**
+     * Creates and starts a virtual thread that continuously reads messages
+     * from the server and prints them to the console.
+     *
+     * @param reader the reader connected to the server's input stream
+     * @return the started reader thread
+     */
     private static Thread createReaderThread(BufferedReader reader) {
         return Thread.startVirtualThread(() -> {
             try {
@@ -78,6 +102,13 @@ public class SocketClientUtils {
         });
     }
 
+    /**
+     * Reads user input from the console and sends it to the server.
+     * Supports "bye" as an exit command.
+     *
+     * @param writer the writer connected to the server's output stream
+     * @throws IOException if an I/O error occurs while reading from console
+     */
     private static void readFromConsoleAndSend(PrintWriter writer) throws IOException {
         try (BufferedReader console = new BufferedReader(new InputStreamReader(System.in))) {
             printPrompt();
@@ -98,11 +129,18 @@ public class SocketClientUtils {
         }
     }
 
+    /**
+     * Prints the user input prompt ("You: ").
+     */
     private static void printPrompt() {
         System.out.print("You: ");
         System.out.flush();
     }
 
+    /**
+     * Clears the current console line by overwriting it with spaces.
+     * Used to remove the old prompt before printing a new server message.
+     */
     private static void clearCurrentLine() {
         System.out.print("\r" + " ".repeat(60) + "\r");
         System.out.flush();
